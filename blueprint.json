@@ -16,12 +16,12 @@
         "patch": 0
       }
     },
-    "timestamp": "2020-09-24T10:54:58+10:00"
+    "timestamp": "2020-09-24T11:08:20+10:00"
   },
   "software": {
     "base": {
       "name": "enginesdbase",
-      "framework": "docker",
+      "framework": "base_c",
       "parent_image": "debian:buster",
       "run_as_user": "root",
       "deployment_type": "worker",
