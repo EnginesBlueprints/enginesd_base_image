@@ -16,7 +16,7 @@
         "patch": 0
       }
     },
-    "timestamp": "2020-09-24T11:17:05+10:00"
+    "timestamp": "2020-09-24T11:36:22+10:00"
   },
   "software": {
     "base": {
@@ -33,7 +33,7 @@
     "scripts": {
       "start": {
         "language": "sh",
-        "content": "#!/bin/sh\r\n\r\nsleep"
+        "content": "#!/bin/sh\r\n\r\nsleep 3600"
       }
     },
     "external_repositories": [
