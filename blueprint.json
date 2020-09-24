@@ -65,7 +65,26 @@
         "language": "text",
         "content": "{\n  \"server\": true,\n  \"bootstrap_expect\": 1,\n  \"data_dir\": \"/home/fs/data/consula\",\n  \"ui_dir\": \"/home/fs/data/consula-ui\",\n  \"ui\": true,\n  \"client_addr\": \"0.0.0.0\",\n  \"bind_addr\": \"$host\",\n   \"encrypt\" : :_Engines_Environment(consul_secret):\n}"
       }
-    ]
+    ],
+    "capabilities": {
+      "allow": "all",
+      "selected": [
+        "SETPCAP",
+        "MKNOD",
+        "AUDIT_WRITE",
+        "CHOWN",
+        "NET_RAW",
+        "DAC_OVERRIDE",
+        "FOWNER",
+        "FSETID",
+        "KILL",
+        "SETGID",
+        "SETUID",
+        "NET_BIND_SERVICE",
+        "SYS_CHROOT",
+        "SETFCAP"
+      ]
+    }
   },
   "schema": {
     "type": "app_blueprint",
