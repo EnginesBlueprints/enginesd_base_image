@@ -15,12 +15,68 @@
         "level": "alpha",
         "patch": 0
       }
-    }
+    },
+    "timestamp": "2020-09-24T10:33:54+10:00"
   },
   "software": {
     "base": {
-      "deployment_type": "web",
-      "http_protocol": "https_and_http"
-    }
+      "name": "enginesdbase",
+      "framework": "docker",
+      "parent_image": "debian:buster",
+      "run_as_user": "enginesd",
+      "deployment_type": "worker",
+      "memory": {
+        "required": 256
+      }
+    },
+    "scripts": {
+      "start": {
+        "language": "sh",
+        "content": "#!/bin/sh\r\n\r\nsleep"
+      }
+    },
+    "external_repositories": [
+      {
+        "source": "\"deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main\"",
+        "key": "https://apt.releases.hashicorp.com/gpg"
+      }
+    ],
+    "system_packages": [
+      {
+        "package": "consul"
+      },
+      {
+        "package": "rsyslog"
+      },
+      {
+        "package": "openldap"
+      }
+    ],
+    "installed_packages": [
+      {
+        "name": "prometheus-2.21.0.linux-amd64.tar.gz",
+        "download_type": "http(s)",
+        "source_url": "https://github.com/prometheus/prometheus/releases/download/v2.21.0/prometheus-2.21.0.linux-amd64.tar.gz",
+        "destination": "/usr/local/prometheus",
+        "extraction_command": "tar -xzpf",
+        "path_to_extracted": "./"
+      }
+    ],
+    "service_configurations": [
+      {
+        "publisher_namespace": "EnginesSystem",
+        "type_path": "filesystem/local/filesystem",
+        "variables": {
+          "service_name": "_Engines_Builder(engine_name)",
+          "volume_src": "",
+          "engine_path": "/data",
+          "permissions": "rw",
+          "user": "_Engines_Builder(cont_user_id)",
+          "group": "_Engines_Builder(data_gid)",
+          "fw_user": "_Engines_Builder(cont_user_id)",
+          "exclude_from_backup": "false"
+        }
+      }
+    ]
   }
 }
