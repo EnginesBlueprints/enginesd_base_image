@@ -1,29 +1,8 @@
 {
-  "schema": {
-    "type": "app_blueprint",
-    "version": {
-      "major": 0,
-      "minor": 1
-    },
-    "origin": "Engines Developer Studio 0.2"
-  },
-  "metadata": {
-    "blueprint": {
-      "version": {
-        "major": 0,
-        "minor": 0,
-        "level": "alpha",
-        "patch": 0
-      }
-    },
-    "timestamp": "2020-09-24T11:36:22+10:00"
-  },
   "software": {
     "base": {
       "name": "enginesdbase",
       "framework": "base_c",
-      "parent_image": "debian:buster",
-      "run_as_user": "root",
       "deployment_type": "worker",
       "http_protocol": "https_and_http",
       "memory": {
@@ -71,7 +50,6 @@
         "type_path": "filesystem/local/filesystem",
         "variables": {
           "service_name": "_Engines_Builder(engine_name)",
-          "volume_src": "",
           "engine_path": "/data",
           "permissions": "rw",
           "user": "_Engines_Builder(cont_user_id)",
@@ -80,6 +58,21 @@
           "exclude_from_backup": "false"
         }
       }
+    ],
+    "template_files": [
+      {
+        "path": "consula",
+        "language": "text",
+        "content": "{\n  \"server\": true,\n  \"bootstrap_expect\": 1,\n  \"data_dir\": \"/home/fs/data/consula\",\n  \"ui_dir\": \"/home/fs/data/consula-ui\",\n  \"ui\": true,\n  \"client_addr\": \"0.0.0.0\",\n  \"bind_addr\": \"$host\",\n   \"encrypt\" : :_Engines_Environment(consul_secret):\n}"
+      }
     ]
+  },
+  "schema": {
+    "type": "app_blueprint",
+    "version": {
+      "major": 0,
+      "minor": 1
+    },
+    "origin": "Engines Developer Studio 0.3"
   }
 }
