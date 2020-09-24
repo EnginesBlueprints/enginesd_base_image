@@ -16,7 +16,7 @@
         "patch": 0
       }
     },
-    "timestamp": "2020-09-24T10:33:54+10:00"
+    "timestamp": "2020-09-24T10:37:18+10:00"
   },
   "software": {
     "base": {
@@ -25,6 +25,7 @@
       "parent_image": "debian:buster",
       "run_as_user": "enginesd",
       "deployment_type": "worker",
+      "http_protocol": "https_and_http",
       "memory": {
         "required": 256
       }
@@ -50,16 +51,9 @@
       },
       {
         "package": "openldap"
-      }
-    ],
-    "installed_packages": [
+      },
       {
-        "name": "prometheus-2.21.0.linux-amd64.tar.gz",
-        "download_type": "http(s)",
-        "source_url": "https://github.com/prometheus/prometheus/releases/download/v2.21.0/prometheus-2.21.0.linux-amd64.tar.gz",
-        "destination": "/usr/local/prometheus",
-        "extraction_command": "tar -xzpf",
-        "path_to_extracted": "./"
+        "package": "prometheus"
       }
     ],
     "service_configurations": [
