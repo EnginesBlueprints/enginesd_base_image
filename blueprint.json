@@ -4,14 +4,14 @@
       "name": "enginesdbase",
       "framework": "base_c",
       "deployment_type": "worker",
-      "sudo_list": "/usr/sbin/ifconfig  /usr/sbin/slapd /usr/sbin/rsyslogd",
+      "sudo_list": "/usr/sbin/ifconfig /usr/sbin/slapd /usr/sbin/rsyslogd /usr/bin/prometheus",
       "memory": {
         "required": 256
       }
     },
     "scripts": {
       "start": {
-        "content": "#!/bin/sh\n\nPID_FILE=/run/engines/pid\nexport PID_FILE\n. /home/engines/functions/trap.sh\n\nsudo /usr/sbin/ifconfig lo:3 127.0.0.3\nsudo /usr/sbin/ifconfig lo:4 127.0.0.4\n\nsudo /usr/sbin/rsyslogd\necho -n \"$! \" > /run/engines/syslog.pid \n\nip=`grep $CONTAINER_NAME /etc/hosts |cut -f1`\n\nconsul agent -config-format json -config-file consula.json -syslog -client 127.0.0.1  -retry-join 127.0.0.3 -retry-join 127.0.0.4] -bind $ip &\necho -n \"$! \" >/run/engines/consula.pid\n\nconsul agent -config-format json -config-file consulb.json -syslog -client 127.0.0.3  -retry-join 172.17.0.22  -retry-join 127.0.0.4 -bind 127.0.0.3 &\necho -n \"$! \" >/run/engines/consulb.pid\n\nconsul agent -config-format json -config-file consulc.json -syslog -client 127.0.0.4  -retry-join 172.17.0.22  -retry-join 127.0.0.3 -bind 127.0.0.4 &\necho -n \"$! \" >/run/engines/consulc.pid\n\n\nsudo /usr/sbin/slapd $ldap_debug -h \"ldap://0.0.0.0/  ldapi:///\" \necho -n \"$! \" > /run/engines/slapd.pid\n\nprometheus &\nppid=$!\n#note this does not properly deal with HUP\nwait\necho -n \"$ppid \" > /run/engines/prometheus.pid\n\ncat /run/engines/prometheus/*.pid > $PID_FILE\n\nstartup_complete\n\n\nshutdown_complete\nexit\n"
+        "content": "#!/bin/sh\n\nPID_FILE=/run/engines/pid\nexport PID_FILE\n. /home/engines/functions/trap.sh\n\nsudo /usr/sbin/ifconfig lo:3 127.0.0.3\nsudo /usr/sbin/ifconfig lo:4 127.0.0.4\n\nsudo /usr/sbin/rsyslogd\necho -n \"$! \" > /run/engines/syslog.pid \n\nip=`grep $CONTAINER_NAME /etc/hosts |cut -f1`\n\nconsul agent -config-format json -config-file consula.json -syslog -client 127.0.0.1  -retry-join 127.0.0.3 -retry-join 127.0.0.4] -bind $ip &\necho -n \"$! \" >/run/engines/consula.pid\n\nconsul agent -config-format json -config-file consulb.json -syslog -client 127.0.0.3  -retry-join 172.17.0.22  -retry-join 127.0.0.4 -bind 127.0.0.3 &\necho -n \"$! \" >/run/engines/consulb.pid\n\nconsul agent -config-format json -config-file consulc.json -syslog -client 127.0.0.4  -retry-join 172.17.0.22  -retry-join 127.0.0.3 -bind 127.0.0.4 &\necho -n \"$! \" >/run/engines/consulc.pid\n\n\nsudo /usr/sbin/slapd $ldap_debug -h \"ldap://0.0.0.0/  ldapi:///\" \necho -n \"$! \" > /run/engines/slapd.pid\n\nsudo /usr/bin/prometheus &\nppid=$!\n#note this does not properly deal with HUP\nstartup_complete\nwait\necho -n \"$ppid \" > /run/engines/prometheus.pid\n\ncat /run/engines/prometheus/*.pid > $PID_FILE\n\n\n\n\nshutdown_complete\nexit\n"
       }
     },
     "external_repositories": [
