@@ -4,15 +4,14 @@
       "name": "enginesdbase",
       "framework": "base_c",
       "deployment_type": "worker",
-      "http_protocol": "https_and_http",
+      "sudo_list": "/usr/sbin/ifconfig  /usr/sbin/slapd /usr/sbin/rsyslogd",
       "memory": {
         "required": 256
       }
     },
     "scripts": {
       "start": {
-        "language": "sh",
-        "content": "#!/bin/sh\r\n\r\nsleep 3600"
+        "content": "#!/bin/sh\n\nPID_FILE=/run/engines/pid\nexport PID_FILE\n. /home/engines/functions/trap.sh\n\nsudo /usr/sbin/ifconfig lo:3 127.0.0.3\nsudo /usr/sbin/ifconfig lo:4 127.0.0.4\n\nsudo /usr/sbin/rsyslogd\necho -n \"$! \" > /run/engines/syslog.pid \n\nip=`grep $CONTAINER_NAME /etc/hosts |cut -f1`\n\nconsul agent -config-format json -config-file consula.json -syslog -client 127.0.0.1  -retry-join 127.0.0.3 -retry-join 127.0.0.4] -bind-addr $ip &\necho -n \"$! \" >/run/engines/consula.pid\n\nconsul agent -config-format json -config-file consulb.json -syslog -client 127.0.0.3  -retry-join 172.17.0.22  -retry-join 127.0.0.4 -bind-addr 127.0.0.3 &\necho -n \"$! \" >/run/engines/consulb.pid\n\nconsul agent -config-format json -config-file consulc.json -syslog -client 127.0.0.4  -retry-join 172.17.0.22  -retry-join 127.0.0.3 -bind-addr 127.0.0.4 &\necho -n \"$! \" >/run/engines/consulc.pid\n\n\nsudo /usr/sbin/slapd $ldap_debug -h \"ldap://0.0.0.0/  ldapi:///\" \necho -n \"$! \" > /run/engines/slapd.pid\n\nprometheus &\necho -n \"$! \" > /run/engines/prometheus.pid\n\ncat /run/engines/prometheus/*.pid > $PID_FILE\n\nstartup_complete\n#note this does not properly deal with HUP\nwait\nshutdown_complete\nexit\n"
       }
     },
     "external_repositories": [
@@ -50,7 +49,8 @@
         "type_path": "filesystem/local/filesystem",
         "variables": {
           "service_name": "_Engines_Builder(engine_name)",
-          "engine_path": "/data",
+          "volume_src": "null",
+          "engine_path": "/opt/consul",
           "permissions": "rw",
           "user": "_Engines_Builder(cont_user_id)",
           "group": "_Engines_Builder(data_gid)",
@@ -61,29 +61,21 @@
     ],
     "template_files": [
       {
-        "path": "consula",
+        "path": "consula.json",
         "language": "text",
-        "content": "{\n  \"server\": true,\n  \"bootstrap_expect\": 1,\n  \"data_dir\": \"/home/fs/data/consula\",\n  \"ui_dir\": \"/home/fs/data/consula-ui\",\n  \"ui\": true,\n  \"client_addr\": \"0.0.0.0\",\n  \"bind_addr\": \"$host\",\n   \"encrypt\" : :_Engines_Environment(consul_secret):\n}"
+        "content": "{\n  \"datacenter\": \"dc-engines-internal\",\n  \"data_dir\": \"/opt/consul/a\",\n  \"log_level\": \"INFO\",\n  \"node_name\": \"consula\",\n  \"server\": true,\n \"encrypt\": \"_Engines_Environment(consul_secret)\",\n \"bootstrap_expect\": 3\n}"
+      },
+      {
+        "path": "consulb",
+        "content": "{\n  \"datacenter\": \"dc-engines-internal\",\n  \"data_dir\": \"/opt/consul/b\",\n  \"log_level\": \"INFO\",\n  \"node_name\": \"consulb\",\n  \"server\": true,\n \"encrypt\": \"_Engines_Environment(consul_secret)\",\n \"bootstrap_expect\": 3\n}"
+      },
+      {
+        "path": "consulc",
+        "content": "{\n  \"datacenter\": \"dc-engines-internal\",\n  \"data_dir\": \"/opt/consul/c\",\n  \"log_level\": \"INFO\",\n  \"node_name\": \"consulc\",\n  \"server\": true,\n \"encrypt\": \"_Engines_Environment(consul_secret)\",\n \"bootstrap_expect\": 3\n}"
       }
     ],
     "capabilities": {
-      "allow": "all",
-      "selected": [
-        "SETPCAP",
-        "MKNOD",
-        "AUDIT_WRITE",
-        "CHOWN",
-        "NET_RAW",
-        "DAC_OVERRIDE",
-        "FOWNER",
-        "FSETID",
-        "KILL",
-        "SETGID",
-        "SETUID",
-        "NET_BIND_SERVICE",
-        "SYS_CHROOT",
-        "SETFCAP"
-      ]
+      "allow": "all"
     }
   },
   "schema": {
