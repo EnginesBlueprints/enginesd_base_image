@@ -16,7 +16,7 @@
         "patch": 0
       }
     },
-    "timestamp": "2020-09-24T11:08:20+10:00"
+    "timestamp": "2020-09-24T11:17:05+10:00"
   },
   "software": {
     "base": {
@@ -50,10 +50,19 @@
         "package": "rsyslog"
       },
       {
-        "package": "openldap"
+        "package": "slapd"
       },
       {
         "package": "prometheus"
+      },
+      {
+        "package": "sasl2-bin"
+      },
+      {
+        "package": "libsasl2-2"
+      },
+      {
+        "package": "libsasl2-modules-ldap"
       }
     ],
     "service_configurations": [
