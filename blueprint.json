@@ -16,16 +16,15 @@
         "patch": 0
       }
     },
-    "timestamp": "2020-09-24T10:37:18+10:00"
+    "timestamp": "2020-09-24T10:54:58+10:00"
   },
   "software": {
     "base": {
       "name": "enginesdbase",
       "framework": "docker",
       "parent_image": "debian:buster",
-      "run_as_user": "enginesd",
+      "run_as_user": "root",
       "deployment_type": "worker",
-      "http_protocol": "https_and_http",
       "memory": {
         "required": 256
       }
